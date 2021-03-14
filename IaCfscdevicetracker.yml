@@ -105,16 +105,16 @@ Resources:
           commands:
             01-Pull-NodeJS:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://nodejs.org/dist/v14.16.0/node-v14.16.0-x64.msi' -Outfile 'C:\node-v14.16.0-x64.msi'          
-              waitAfterCompletion: '50'
+              waitAfterCompletion: '30'
             02-Pull-PostMan:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://dl.pstmn.io/download/latest/win64' -Outfile 'C:\pstmn.exe'          
-              waitAfterCompletion: '50'
+              waitAfterCompletion: '30'
             03-Pull-VSC:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkID=623230' -OutFile 'C:\VSCodeSetup-stable.exe'          
-              waitAfterCompletion: '50'
+              waitAfterCompletion: '30'
             04-Pull-MangoDB:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-4.4.4-signed.msi' -Outfile 'C:\mongodb.msi'         
-              waitAfterCompletion: '50'
+              waitAfterCompletion: '30'
             05-Pull-FSCCode:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://github.com/iliyasmohamed/fscdevicetracker/archive/main.zip' -OutFile 'c:\fscdevicetracker.zip'                   
               waitAfterCompletion: '10'
@@ -132,7 +132,7 @@ Resources:
               ignoreErrors: "true"     
             09-Install-MongoDB:
               command: cmd.exe /c msiexec.exe /i c:\mongodb.msi /l*v c:\mdbinstall.log  /qn  ADDLOCAL="ServerService,Client" SHOULD_INSTALL_COMPASS="0"
-              waitAfterCompletion: '120'
+              waitAfterCompletion: '30'
               ignoreErrors: "true"   
             10-Extract-FSCCode:
               command: powershell.exe -Command "Expand-Archive c:\fscdevicetracker.zip c:\fscdevicetracker"
@@ -141,6 +141,18 @@ Resources:
             88-RebootServer:
               command: powershell.exe -Command Restart-Computer -Force
               waitAfterCompletion: 'forever'
+            11-Extract-UserProfile:
+              command: powershell.exe -Command "Move-Item -Path 'C:\fscdevicetracker\fscdevicetracker-main\Microsoft.PowerShell_profile.ps1' -Destination 'C:\Users\Administrator\Documents\WindowsPowerShell\'"
+              waitAfterCompletion: '10'
+              ignoreErrors: "true"   
+            12-npm-install:
+              command: powershell.exe -Command "npm install"
+              waitAfterCompletion: '10'
+              ignoreErrors: "true"   
+            14-npm-start:
+              command: powershell.exe -Command "npm start"
+              waitAfterCompletion: '10'
+              ignoreErrors: "true"   
           services:
             windows:
               cfn-hup:
