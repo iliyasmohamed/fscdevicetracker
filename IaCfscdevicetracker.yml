@@ -135,7 +135,7 @@ Resources:
               waitAfterCompletion: '120'
               ignoreErrors: "true"   
             10-Extract-FSCCode:
-              command: powershell.exe -Command "Expand-Archive C:\fscdevicetracker.zip c:\fscdevicetracker"
+              command: powershell.exe -Command "Expand-Archive c:\fscdevicetracker.zip c:\fscdevicetracker"
               waitAfterCompletion: '20'
               ignoreErrors: "true"   
             88-RebootServer:
