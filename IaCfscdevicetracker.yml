@@ -114,7 +114,7 @@ Resources:
               waitAfterCompletion: '50'
             04-Pull-MangoDB:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-4.4.4-signed.msi' -Outfile 'C:\mongodb.msi'         
-              waitAfterCompletion: '360'
+              waitAfterCompletion: '240'
             05-Pull-FSCCode:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://github.com/iliyasmohamed/fscdevicetracker/archive/main.zip' -OutFile 'c:\fscdevicetracker.zip'                   
               waitAfterCompletion: '10'
