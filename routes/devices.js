@@ -41,5 +41,35 @@ router.get('/:id', async(req,res) => {
     }
 });
 
+//module to add devices to the storage
+//logic to add only 10 devices and the system  prevent adding more
+router.post('/', async(req,res) => 
+{
+    const number = await Device.countDocuments();
+        
+    if(number < 10)
+    {
+        const device = new Device;
+        (
+            {
+                device: req.body.device,
+                os: req.body.os,
+                manufacturer: req.body.manufacturer,
+            }
+        )
+        try
+        {
+            const a1 =  await device.save();
+            res.json(a1);
+        }catch(err)
+        {
+            res.send('Error');
+        }
+    }
+    else
+    {
+        res.send('Max number of devices reached');
+    }
+})
 
 module.exports = router;
