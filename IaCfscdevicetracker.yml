@@ -142,7 +142,7 @@ Resources:
               command: powershell.exe -Command Restart-Computer -Force
               waitAfterCompletion: 'forever'
             12-Extract-UserProfile:
-              command: powershell.exe -Command "Move-Item -Path 'C:\fscdevicetracker\fscdevicetracker-main\Microsoft.PowerShell_profile.ps1' -Destination 'C:\Users\Administrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'"              
+              command: powershell.exe -Command "Move-Item -Path 'C:\fscdevicetracker\fscdevicetracker-main\Microsoft.PowerShell_profile.ps1' -Destination 'C:\Users\Administrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'"
               waitAfterCompletion: '10'
               ignoreErrors: "true"   
             14-npm-install:
