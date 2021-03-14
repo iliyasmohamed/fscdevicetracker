@@ -138,18 +138,18 @@ Resources:
               command: powershell.exe -Command "Expand-Archive c:\fscdevicetracker.zip c:\fscdevicetracker"
               waitAfterCompletion: '20'
               ignoreErrors: "true"   
-            88-RebootServer:
+            11-RebootServer:
               command: powershell.exe -Command Restart-Computer -Force
               waitAfterCompletion: 'forever'
-            11-Extract-UserProfile:
-              command: powershell.exe -Command "Move-Item -Path 'C:\fscdevicetracker\fscdevicetracker-main\Microsoft.PowerShell_profile.ps1' -Destination 'C:\Users\Administrator\Documents\WindowsPowerShell\'"
+            12-Extract-UserProfile:
+              command: powershell.exe -Command "Move-Item -Path 'C:\fscdevicetracker\fscdevicetracker-main\Microsoft.PowerShell_profile.ps1' -Destination 'C:\Users\Administrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'"              
               waitAfterCompletion: '10'
               ignoreErrors: "true"   
-            12-npm-install:
+            14-npm-install:
               command: powershell.exe -Command "npm install"
               waitAfterCompletion: '10'
               ignoreErrors: "true"   
-            14-npm-start:
+            15-npm-start:
               command: powershell.exe -Command "npm start"
               waitAfterCompletion: '10'
               ignoreErrors: "true"   
