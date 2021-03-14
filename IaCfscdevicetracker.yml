@@ -1,0 +1,196 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation to create a new EC2 instance for Full Stack Challenge
+Parameters:  
+  Environment:
+    Type: String
+    Default: prd
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable RDP access to the instances
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  VpcID:
+    Description: ID of an existing VPC
+    Type: AWS::EC2::VPC::Id
+  EC2SubnetID:
+    Description: Subnet ID to deploy EC2
+    Type: List<AWS::EC2::Subnet::Id>
+    ConstraintDescription: must be the name of an existing subnet in a VPC.
+  AZ:
+    Description: AvailabilityZone
+    Type: List<AWS::EC2::AvailabilityZone::Name>
+    ConstraintDescription: must be the name of an existing AZ
+  EC2InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: t2.large
+    AllowedValues:
+    - t2.large
+    - t2.xlarge
+    - t3.large
+    - t3.xlarge
+    - t3a.large
+    - t3a.xlarge
+    ConstraintDescription: must be a valid EC2 instance type.
+  EC2NodeCount:
+    Type: String
+    Default: '1'
+    Description: Please specify the number of nodes for autoscaling
+  CidrIp:
+    Description: >-
+      CIDR (Used to limit ingress traffic only from the specific IP space)
+    Type: String
+    Default: 0.0.0.0/0  
+  AMI:
+    Description: Windows 2019 ami
+    Type: 'AWS::EC2::Image::Id'
+    Default: ami-00843a337042b9b8b
+Mappings:
+  AWSInstanceType2Arch:
+    t2.small:
+      Arch: HVM64
+    t2.medium:
+      Arch: HVM64
+    t2.large:
+      Arch: HVM64
+  AWSRegionArch2AMI:
+    us-east-1:
+      HVM64: ami-02642c139a9dfb378      
+    us-east-2:
+      HVM64: ami-00843a337042b9b8b
+    us-west-1:
+      HVM64: ami-0b7c10374cfb013e6
+    us-west-2:
+      HVM64: ami-0f7db24b49508dd37
+Resources:  
+  EC2AutoScalingGroup:
+    Type: 'AWS::AutoScaling::AutoScalingGroup'
+    Properties:
+      VPCZoneIdentifier:
+        Ref: EC2SubnetID
+      MinSize: !Ref EC2NodeCount
+      LaunchConfigurationName: !Ref EC2LaunchConfig 
+      MaxSize: !Ref EC2NodeCount
+      DesiredCapacity: !Ref EC2NodeCount
+  EC2LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          files:
+            c:\cfn\cfn-hup.conf:
+              content:
+                Fn::Join:
+                - ''
+                - - "[main]\n"
+                  - stack=
+                  - Ref: AWS::StackId
+                  - "\n"
+                  - region=
+                  - Ref: AWS::Region
+                  - "\n"
+            c:\cfn\hooks.d\cfn-auto-reloader.conf:
+              content:
+                Fn::Join:
+                - ''
+                - - "[cfn-auto-reloader-hook]\n"
+                  - 'triggers=post.update'
+                  - 'path=Resources.EC2LaunchConfig.Metadata.AWS::CloudFormation::Init'
+                  - 'action=cfn-init.exe -v -s '
+                  - Ref: AWS::StackId
+                  - " -r EC2LaunchConfig"
+                  - " --region "
+                  - Ref: AWS::Region
+                  - "\n"                        
+          commands:
+            01-Pull-NodeJS:
+              command: powershell.exe -Command Invoke-WebRequest -Uri 'https://nodejs.org/dist/v14.16.0/node-v14.16.0-x64.msi' -Outfile 'C:\node-v14.16.0-x64.msi'          
+              waitAfterCompletion: '50'
+            02-Pull-PostMan:
+              command: powershell.exe -Command Invoke-WebRequest -Uri 'https://dl.pstmn.io/download/latest/win64' -Outfile 'C:\pstmn.exe'          
+              waitAfterCompletion: '50'
+            03-Pull-VSC:
+              command: powershell.exe -Command Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkID=623230' -OutFile 'C:\VSCodeSetup-stable.exe'          
+              waitAfterCompletion: '50'
+            04-Pull-MangoDB:
+              command: powershell.exe -Command Invoke-WebRequest -Uri 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-4.4.4-signed.msi' -Outfile 'C:\mongodb.msi'         
+              waitAfterCompletion: '360'
+            05-Pull-FSCCode:
+              command: powershell.exe -Command Invoke-WebRequest -Uri 'https://github.com/iliyasmohamed/fscdevicetracker/archive/main.zip' -OutFile 'c:\fscdevicetracker.zip'                   
+              waitAfterCompletion: '10'
+            06-Install-NodeJS:
+              command: powershell.exe -Command Start-Process 'C:\node-v14.16.0-x64.msi' /quiet -wait
+              waitAfterCompletion: '30'
+              ignoreErrors: "true"     
+            07-Install-PostMan:
+              command: powershell.exe -Command Start-Process -FilePath 'C:\pstmn.exe' -ArgumentList '/SILENT /LOG="C:\pstmn.log"'
+              waitAfterCompletion: '30'
+              ignoreErrors: "true"     
+            08-Install-VSC:
+              command: powershell.exe -Command Start-Process -FilePath 'C:\VSCodeSetup-stable.exe' -ArgumentList '/SILENT /LOG="C:\VSCodeSetup.log"'
+              waitAfterCompletion: '30'
+              ignoreErrors: "true"     
+            09-Install-MongoDB:
+              command: cmd.exe /c msiexec.exe /i c:\mongodb.msi /l*v c:\mdbinstall.log  /qn  ADDLOCAL="ServerService,Client" SHOULD_INSTALL_COMPASS="0"
+              waitAfterCompletion: '120'
+              ignoreErrors: "true"   
+            10-Extract-FSCCode:
+              command: powershell.exe -Command "Expand-Archive C:\fscdevicetracker.zip c:\fscdevicetracker"
+              waitAfterCompletion: '20'
+              ignoreErrors: "true"   
+            88-RebootServer:
+              command: powershell.exe -Command Restart-Computer -Force
+              waitAfterCompletion: 'forever'
+          services:
+            windows:
+              cfn-hup:
+                enabled: 'true'
+                ensureRunning: 'true'
+                files:
+                - c:\cfn\cfn-hup.conf
+                - c:\cfn\hooks.d\cfn-auto-reloader.conf
+    Properties:
+      KeyName: !Ref KeyName
+      ImageId:
+        'Fn::FindInMap':
+          - AWSRegionArch2AMI
+          - Ref: 'AWS::Region'
+          - 'Fn::FindInMap':
+              - AWSInstanceType2Arch
+              - t2.large
+              - Arch
+      InstanceType: t2.large
+      SecurityGroups:
+        - Ref: ApplicationEC2SG
+      KeyName:
+        Ref: KeyName            
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+          - ''
+          - - "<script>\n"
+            - 'cfn-init.exe -v -s '
+            - Ref: AWS::StackId
+            - " -r EC2LaunchConfig"
+            - " --region "
+            - Ref: AWS::Region
+            - "\n"
+            - "</script>"    
+  ApplicationEC2SG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: EC2 Server Security Group
+      VpcId: !Ref VpcID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '3389'
+          ToPort: '3389'
+          CidrIp: !Ref CidrIp
+        - IpProtocol: tcp
+          FromPort: '27017'
+          ToPort: '27030'
+          CidrIp: !Ref CidrIp
+        - IpProtocol: tcp
+          FromPort: '8080'
+          ToPort: '8080'
+          CidrIp: !Ref CidrIp
