@@ -1,6 +1,7 @@
+//Using Node.js `require()`
 const mongoose = require('mongoose');
 
-
+//definition of schema, collections
 const deviceSchema = new mongoose.Schema({
 
     device:             {type: String,  required: true},
