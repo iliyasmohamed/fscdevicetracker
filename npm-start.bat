@@ -1,0 +1,1 @@
+npm run start --prefix C:\fscdevicetracker\fscdevicetracker-main

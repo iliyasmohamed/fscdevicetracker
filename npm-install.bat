@@ -1,0 +1,1 @@
+npm install --prefix C:\fscdevicetracker\fscdevicetracker-main
