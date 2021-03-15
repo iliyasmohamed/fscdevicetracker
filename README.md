@@ -46,6 +46,9 @@ This application runs on port:8080 and database listens on port:27017
 Once you see the stack created successful message, navigate to AWS Services -> EC2 instance and extrack the EC2 password.
 RDP to the EC2 instance and launch "PostMan" application to access the application, run & post CRUD operations
 
+Please note 
+11. Once all the testing is done, you can delete the stack by Navigate to Services -> CloudFormation ->  Stacks -> Delete. This will clean-up all the compute created as part of IaC.
+
 ### How to execute CRUD Operations
 *Please ensure to select "raw" option and "JSON" format in POSTMAN while executing CRUD operations*
 
