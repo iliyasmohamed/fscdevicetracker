@@ -1,1 +1,0 @@
-Set-location C:\fscdevicetracker\fscdevicetracker-main
