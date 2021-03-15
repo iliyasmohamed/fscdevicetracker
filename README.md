@@ -15,16 +15,16 @@ This application runs on port:8080 and database listens on port:27017
 4. Under "Specify template" select "Upload a template file"
 5. Click "Choose file" under "Upload a template file" and Open "IaCfscdevicetracker" and click "Next"
 6. Specify stack details:
-    Stack name: ###Enter a stack name for our reference###
-    AMI: ###Use ami-02642c139a9dfb378 for us-east-1 or ami-00843a337042b9b8b for us-east-2 or ami-0b7c10374cfb013e6 for us-west-1 or ami-0f7db24b49508dd37 for us-west-2###
-    AZ: ###Pick from the list. You can pick any available AZ from the list###
-    CidrIp: ###accept the default###
-    EC2SubnetID: ###accept the default###
+    Stack name: *Enter a stack name for our reference*
+    AMI: *Use ami-02642c139a9dfb378 for us-east-1 or ami-00843a337042b9b8b for us-east-2 or ami-0b7c10374cfb013e6 for us-west-1 or ami-0f7db24b49508dd37 for us-west-2*
+    AZ: *Pick from the list. You can pick any available AZ from the list*    
+    CidrIp: *accept the default*    
+    EC2SubnetID: *accept the default*
     EC2NodeCount: 1
-    EC2SubnetID: ###Pick from the list. You can pick any available AZ from the list###
-    Environment: ###Enter a name for our reference###
-    KeyName: ###Name of an existing EC2 KeyPair to enable RDP access to the instances###
-    VpcID: ###Pick from the list.###
+    EC2SubnetID: *Pick from the list. You can pick any available AZ from the list*
+    Environment: *Enter a name for our reference*
+    KeyName: *Name of an existing EC2 KeyPair to enable RDP access to the instances*
+    VpcID: *Pick from the list.*
 7. Configure stack options -> accept the default and click "Next"
 8. Review the details and click "Create stack"
 9. In AWS Console -> Navigate to EC2 -> Launch Configurations from the left side bar
