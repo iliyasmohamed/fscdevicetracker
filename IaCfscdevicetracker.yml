@@ -140,11 +140,7 @@ Resources:
               ignoreErrors: "true"   
             11-RebootServer:
               command: powershell.exe -Command Restart-Computer -Force
-              waitAfterCompletion: 'forever'
-            12-Extract-UserProfile:
-              command: powershell.exe -Command "Move-Item -Path 'C:\fscdevicetracker\fscdevicetracker-main\Microsoft.PowerShell_profile.ps1' -Destination 'C:\Users\Administrator\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'"
-              waitAfterCompletion: '10'
-              ignoreErrors: "true"   
+              waitAfterCompletion: 'forever'            
             14-npm-install:
               command: powershell.exe -Command Start-Process 'C:\fscdevicetracker\fscdevicetracker-main\npm-install.bat' -wait
               waitAfterCompletion: '10'
