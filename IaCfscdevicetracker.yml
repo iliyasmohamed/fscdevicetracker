@@ -112,7 +112,7 @@ Resources:
             03-Pull-VSC:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkID=623230' -OutFile 'C:\VSCodeSetup-stable.exe'          
               waitAfterCompletion: '30'
-            04-Pull-MangoDB:
+            04-Pull-MongoDB:
               command: powershell.exe -Command Invoke-WebRequest -Uri 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-4.4.4-signed.msi' -Outfile 'C:\mongodb.msi'         
               waitAfterCompletion: '30'
             05-Pull-FSCCode:
@@ -146,13 +146,13 @@ Resources:
               waitAfterCompletion: '10'
               ignoreErrors: "true"   
             14-npm-install:
-              command: powershell.exe -Command "npm install"
+              command: powershell.exe -Command Start-Process 'C:\fscdevicetracker\fscdevicetracker-main\npm-install.bat' -wait
               waitAfterCompletion: '10'
               ignoreErrors: "true"   
             15-npm-start:
-              command: powershell.exe -Command "npm start"
+              command: powershell.exe -Command Start-Process 'C:\fscdevicetracker\fscdevicetracker-main\npm-start.bat' -wait
               waitAfterCompletion: '10'
-              ignoreErrors: "true"   
+              ignoreErrors: "true"     
           services:
             windows:
               cfn-hup:
